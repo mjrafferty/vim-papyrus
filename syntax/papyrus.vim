@@ -16,7 +16,7 @@ syn case ignore
 
 syn keyword papyrusScript       ScriptName Extends
 
-syn keyword papyrusKeyword      Event EndEvent
+syn keyword papyrusKeyword      Event EndEvent Group EndGroup
 syn keyword papyrusKeyword      Function EndFunction
 syn keyword papyrusKeyword      State EndState Return
 
@@ -34,6 +34,7 @@ syn keyword papyrusBoolean      true false
 
 syn keyword papyrusStorage      Global Native Property EndProperty Auto AutoReadOnly
 syn keyword papyrusOperator     Length New As
+
 syn match   papyrusOperator     /[-+*/,=%.!<>]/
 syn match   papyrusOperator     /[-+*/<>!=%]=/
 syn match   papyrusOperator     /&&/
@@ -110,3 +111,61 @@ if version >= 508 || !exists("did_papyrus_syn_inits")
 endif
 
 let b:current_syntax = "papyrus"
+
+setl fdm=syntax
+
+com! -nargs=* PapyrusFoldFunctions <args> fold
+com! -nargs=* PapyrusFoldIfWhile <args> fold
+com! -nargs=* PapyrusFoldManual <args> fold
+
+PapyrusFoldIfWhile syn region papyrusWhile
+      \ transparent
+      \ matchgroup=papyrusConditional
+      \ start="\s*\<While\>.*"
+      \ matchgroup=papyrusConditional
+      \ end="\s*\<EndWhile\>.*"
+
+PapyrusFoldIfWhile syn region papyrusIf
+      \ transparent
+      \ matchgroup=papyrusConditional
+      \ start="\s*\<If\>.*"
+      \ matchgroup=papyrusConditional
+      \ end="\s*\<EndIf\>.*"
+
+PapyrusFoldFunctions syn region papyrusEvent
+      \ transparent
+      \ matchgroup=papyrusKeyword
+      \ start="\s*\<Event\>.*"
+      \ matchgroup=papyrusKeyword
+      \ end="\s*\<EndEvent\>.*"
+
+PapyrusFoldFunctions syn region papyrusFunction
+      \ transparent
+      \ matchgroup=papyrusKeyword
+      \ start="\s*[^;]*\s*\<Function\>.*"
+      \ matchgroup=papyrusKeyword
+      \ end="\s*\<EndFunction\>.*"
+
+PapyrusFoldFunctions syn region papyrusGroup
+      \ transparent
+      \ matchgroup=papyrusKeyword
+      \ start="\s*\<Group\>.*"
+      \ matchgroup=papyrusKeyword
+      \ end="\s*\<EndGroup\>.*"
+
+PapyrusFoldFunctions syn region papyrusState
+      \ transparent
+      \ matchgroup=papyrusKeyword
+      \ start="\s*\<State\>.*"
+      \ matchgroup=papyrusKeyword
+      \ end="\s*\<EndState\>.*"
+
+PapyrusFoldManual syn region papyrusManual
+      \ transparent
+      \ start="\s*;{"
+      \ end="\s*;}$"
+      \ keepend
+
+delc PapyrusFoldFunctions
+delc PapyrusFoldIfWhile
+delc PapyrusFoldManual
